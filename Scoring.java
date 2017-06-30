@@ -1,36 +1,84 @@
 
 import java.util.*;
 public final class Scoring{
-
+  public static int MIN_SEQUENCE_SIZE = 3;
   private Scoring(){}
 
   public static int getQuadruples(ArrayList<Card> hand){
-    return getMultiples(hand, 4);
+    return 12 * getMultiples(hand, 4);
   }
 
   public static int getTriples(ArrayList<Card> hand){
-    return getMultiples(hand, 3);
+    return 6 * getMultiples(hand, 3);
   }
 
   public static int getPairs(ArrayList<Card> hand){
-    return getMultiples(hand, 2);
+    return 2 * getMultiples(hand, 2);
   }
 
   public static int getMultiples(ArrayList<Card> hand, int n){
     ArrayList<String> values = new ArrayList<String>();
     for(Card c : hand) values.add(c.getRank());
-    //System.out.println("getting multiples of size "+n+"\nHere are the values of the hand");
+    System.out.println("getting multiples of size "+n+"\n Here are the values of the hand...");
 
     ArrayList<String> multis = new ArrayList<String>();
     for(String s : values){
+      System.out.println("looking at "+ s+"... it is seen "+Collections.frequency(values,s)+" times");
       if(Collections.frequency(values,s) == n){
-        if(!multis.contains(s)) multis.add(s);
+        if(!multis.contains(s)) {
+          multis.add(s);
+          System.out.print(s+" appears "+ n+ " times.\n");
+        }
       }
     }
     return multis.size();
   }
 
-  public static int getStreaks(ArrayList<Card> hand){
+  public static HashMap<String,Integer> getMultiples(ArrayList<Card> hand){
+    ArrayList<String> values = new ArrayList<String>();
+    HashMap<String,Integer> multiples = new HashMap<String,Integer>();
+
+    for(Card c : hand) values.add(c.getRank());
+
+    for(String s : values){
+      if(!multiples.containsKey(s)){
+        int n = Collections.frequency(values,s);
+        if(n > 1) multiples.put(s,n);
+      }
+    }
+    return multiples;
+  }
+
+  public static ArrayList<ArrayList<Integer>> getStreaks(ArrayList<Card> hand){
+    ArrayList<ArrayList<Integer>> sequences = new ArrayList<ArrayList<Integer>>();
+    ArrayList<Integer> values = new ArrayList<Integer>();
+
+    for(Card c: hand) values.add(c.getIndexValue());
+    Collections.sort(values);
+
+    for(int i = 0; i < values.size()-(MIN_SEQUENCE_SIZE - 1); i++){
+      int first = values.get(i);
+      int count2 =0;
+      ArrayList<Integer> temp = new ArrayList<Integer>();
+      while(count2 < hand.size()){
+        if(values.contains(first + count2))
+          temp.add(first + count2++);
+        else break;
+      }
+      if(temp.size() > MIN_SEQUENCE_SIZE - 1){
+        if(sequences.size() == 0 || !isSubset(sequences.get(sequences.size()-1), temp)){
+          int j;
+          for(j =0; j < repetitions(values,temp); j++)
+            sequences.add(temp);
+          System.out.println("sequence found "+j+"times");
+        }
+      }
+    }
+
+    return sequences;
+  }
+
+  public static ArrayList<ArrayList<Integer>> getPatterns(ArrayList<Card> hand){
     ArrayList<ArrayList<Integer>> sequences = new ArrayList<ArrayList<Integer>>();
     ArrayList<Integer> values = new ArrayList<Integer>();
 
@@ -43,14 +91,14 @@ public final class Scoring{
         int count2 =0;
         ArrayList<Integer> temp = new ArrayList<Integer>();
 
-        while(count2 < 5){
+        while(count2 < hand.size()){
           if(values.contains(first + (diff*count2))){
             temp.add(first + (diff*count2));
             count2 ++;
           }
           else break;
         }
-        if(temp.size() > 2){
+        if(temp.size() >  MIN_SEQUENCE_SIZE - 1){
           if(sequences.size() == 0 || !isSubset(sequences.get(sequences.size()-1), temp)){
             int j;
             for(j =0; j < repetitions(values,temp); j++)
@@ -60,7 +108,7 @@ public final class Scoring{
         }
       }
     }
-    return sequences.size();
+    return sequences;
   }
 
   public static int repetitions(ArrayList<Integer> hand, ArrayList<Integer> seq){
@@ -126,7 +174,7 @@ public final class Scoring{
     int total =0;
 
     for(Card c : hand){
-      total += c.getValue();
+      total += getValue(c);
     }
     System.out.println(" IS IT FIFTEEN? ... "+ total);
     if(total==15) return 1;
@@ -140,7 +188,7 @@ public final class Scoring{
 
   static void sum_up_recursive(ArrayList<Card> numbers, int target, ArrayList<Card> partial, ArrayList<String> solution) {
      int s = 0;
-     for (Card x: partial) s += x.getValue();
+     for (Card x: partial) s += getValue(x);
      if (s == target)
           solution.add(Arrays.toString(partial.toArray())+" ");
      else if (s >= target) return;
@@ -152,6 +200,19 @@ public final class Scoring{
            partial_rec.add(n);
            sum_up_recursive(remaining,target,partial_rec, solution);
      }
+  }
+
+  /* only applies to cribbage games...*/
+  public static int getValue(Card c){
+    if(c.getRank() == "J" || c.getRank() == "Q" || c.getRank() == "K"){
+      return 10;
+    }
+    else if(c.getRank() == "A"){
+      return 1;
+    }
+
+    else return Integer.parseInt(c.getRank());
+
   }
 
 

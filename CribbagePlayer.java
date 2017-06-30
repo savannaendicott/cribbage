@@ -34,17 +34,32 @@ public class CribbagePlayer extends Player{
 
   public int peg(Card cut){
     int total = 0;
-
     ArrayList<Card> play = new ArrayList<Card>(this.hand);
     play.add(cut);
-    int flushes = Scoring.getFlush(this.hand, cut);
-    int multis = Scoring.getPairs(play) + Scoring.getTriples(play) + Scoring.getQuadruples(play);
-    int streaks = Scoring.getStreaks(play);
-    int fifteens = Scoring.getFifteens(play) * 2;
-    total +=  flushes + multis + streaks + fifteens + Scoring.getBonus(this.hand, cut);
 
-    System.out.println("Hand has " + flushes + " points for a flush, " + multis + " points for pairs/triples/quads, " +
-                        streaks + " points for streaks, and " + fifteens + " sums of 15");
+    ArrayList<ArrayList<Integer>> sequences = Scoring.getStreaks(play);
+    int streak_points =0;
+    for(ArrayList<Integer> seq : sequences){
+      streak_points+=seq.size();
+      for(int n : seq){
+        System.out.print(n+" ");
+      }
+      System.out.print("\n");
+    }
+
+
+    int flushes = Scoring.getFlush(this.hand, cut);
+    int pairs = Scoring.getPairs(play);
+    int trips = Scoring.getTriples(play);
+    int quads = Scoring.getQuadruples(play);
+    //int streaks = Scoring.getStreaks(play);
+    int multis = pairs + trips + quads;
+    int fifteens = Scoring.getFifteens(play) * 2;
+    int bonus = Scoring.getBonus(this.hand,cut);
+    total +=  flushes + multis + streak_points + fifteens + Scoring.getBonus(this.hand, cut);
+
+    System.out.println("Hand has " + flushes + " points for a flush, \n" + pairs + " points for pairs, "+trips+" points for triples, "+quads+", points for quadruples, \n" +
+                        streak_points + " points for streaks, " + fifteens + " points for sets of 15"+ " and "+bonus+" for bonus.");
 
     this.pegs += total;
     return total;
@@ -58,15 +73,15 @@ public class CribbagePlayer extends Player{
     Suit diamonds = new Suit("diamonds",'♦',"red");
     Suit hearts = new Suit("hearts",'♥',"red");
 
-    StandardCard c1 = new StandardCard("7", spades);
-    StandardCard c2 = new StandardCard("8", hearts);
-    StandardCard c3 = new StandardCard("7", clubs);
-    StandardCard c4 = new StandardCard("8", diamonds);
-    StandardCard c5 = new StandardCard("9", diamonds);
+    StandardCard c1 = new StandardCard("6", diamonds);
+    StandardCard c2 = new StandardCard("7", diamonds);
+    StandardCard c3 = new StandardCard("7", diamonds);
+    StandardCard c4 = new StandardCard("7", diamonds);
+    StandardCard c5 = new StandardCard("7", diamonds);
     ArrayList<Card> hand = new ArrayList<Card>();
 
-    int x = Scoring.getStreaks(hand);
-    System.out.println("There are "+ x+" streaks in that hand.");
+    //int x = Scoring.getStreaks(hand);
+    //System.out.println("There are "+ x+" streaks in that hand.");
 
 
     CribbagePlayer player = new CribbagePlayer("Molly");
