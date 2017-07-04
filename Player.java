@@ -25,6 +25,14 @@ public abstract class Player{
     hand.add(c);
   }
 
+  public String getHandToString(){
+    String handStr = "[";
+    for(Card c : hand){
+      handStr += c.toString() +" ";
+    }
+    handStr +="]"
+
+  }
 
   public void discard(StandardDeck deck, Card card){
     deck.discard(card);
