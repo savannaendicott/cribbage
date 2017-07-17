@@ -50,22 +50,47 @@ public class Cribbage extends CardGame{
 
   private ArrayList<Card> crib;
 
-
   public Cribbage(int nP){
     super(nP, false);   // no jokers in cribbage
     crib = new ArrayList<Card>();
+    this.ui = new CribbageUI();
+    String name = this.ui.getUserName();
+    this.user = new User(name);
+    this.players.add(user);
+    while(nP > 1){
+      this.players.add(new CPU());
+      nP --;
+    }
+    this.ui.startGame(this.players);
+  }
+  public Cribbage(int nP, int otherPlayers){
+    // THIS IS FOR A MULTIPLAYER GAME! THIS TYPE OF PLAYER HAS NOT BEEN IMPLEMENTED YET.
+    this(nP - otherPlayers);
+    // would initialize networked players here.
+  }
 
+  public void printPlayers(){
+    System.out.print("Players:   ");
+    for(Player p : this.players)
+    System.out.print(p.getName()+"   ");
   }
 
 
-  public void defineStages(){
+  public void newRound(){
 
   }
 
   public void run(){
 
+
   }
+  public static void main(String[] args){
+    //System.out.println("Random name: "+ NameGenerator.getRandomName());
+    Cribbage game = new Cribbage(2);
 
 
+
+
+  }
 
 }

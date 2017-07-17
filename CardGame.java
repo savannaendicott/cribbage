@@ -5,12 +5,13 @@ public abstract class CardGame {
   protected StandardDeck deck;
   protected ArrayList<Player> players;
   protected Player dealer;
+  protected Player user;
+  protected UserInterface ui;
   //private ArrayList<Stage> stages;
 
   public CardGame (int numPlayers) {//return one person 'a'
     this.deck = new StandardDeck();
     this.players = new ArrayList<Player>();
-    //this.stages = new ArrayList<Stage>();
   }
 
   public CardGame (int numPlayers, boolean jokers) {//return one person 'a'
@@ -29,7 +30,6 @@ public abstract class CardGame {
   public abstract void run();
 
   //public abstract void setup();
-
 
 
 }

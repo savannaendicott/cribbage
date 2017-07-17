@@ -1,11 +1,10 @@
 
 import java.util.*;
 
-public class UI{
+public class UserInterface{
+  public  Scanner sc;
 
-  public UI(){}
-
-
+  public UserInterface(){}
 
   public void startTurn(Player p){
     System.out.println("\n"+ p.getName() +"'s turn...");
@@ -20,11 +19,11 @@ public class UI{
   }
 
   public void displayHand(Player p){
-    System.out.println(p.getName()"'s hand is: "+p.getHandToString());
+    System.out.println(p.getName()+"'s hand is: "+p.getHandToString());
   }
 
   public void draw(Player p){
-    System.out.println(p.getName()" just drew a card.");
+    System.out.println(p.getName()+" just drew a card.");
   }
 
   public void playCard(Player p, Card c){
@@ -33,7 +32,7 @@ public class UI{
     System.out.println(p.getName()+" plays "+c.toString());
   }
 
-  public void returnCardsToHands(ArrayList<Players> players){
+  public void returnCardsToHands(ArrayList<Player> players){
     // refresh all of their hands in the UI - each should have 4 cards either face down or up
     // no cards at the center any more
     System.out.println("cards returned to players hands");
@@ -41,7 +40,7 @@ public class UI{
 
   public void endPlayRound(){
     // just flip each players' cardsupside down in front of them, next ones will appear on top
-    System.out.println("moving to next round....")
+    System.out.println("moving to next round....");
   }
 
   public void cut(Player p, Card c){
@@ -49,13 +48,13 @@ public class UI{
     System.out.println(p.getName()+" cut a "+c.toString());
   }
 
-  public void deal(ArrayList<Players> players){
+  public void deal(ArrayList<Player> players, Player dealer){
     int numCards = 6;
     if(players.size() == 3) numCards = 5;
-    System.out.println("Displaying "+players.size+" cards face down for all players");
+    System.out.println(dealer.getName()+" is dealing... displaying "+players.size()+" cards face down for all players");
   }
 
-  public void createCrib(ArrayList<Players> players){
+  public void createCrib(ArrayList<Player> players){
     // 1 card less displayed for each player (should be 4 now)
     // new hand next to the dealer (the crib) with 4 cards, face down
     if(players.size() == 3){
@@ -78,9 +77,21 @@ public class UI{
   }
 
   public void win(Player p){
-    System.out.println(p.getName() " WINS!!!!!");
+    System.out.println(p.getName() +" WINS!!!!!");
   }
 
+  public String getUserName(){
+    System.out.println("Welcome to the game! Please enter your name: ");
+    sc = new Scanner(System.in);
+    return sc.next();
+  }
+
+  public void startGame(ArrayList<Player> players) {
+    System.out.println("... Starting the game! Players are: ");
+    for(Player p : players){
+      System.out.println("  "+p.getName());
+    }
+  }
 
 
 

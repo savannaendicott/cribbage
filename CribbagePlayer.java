@@ -68,7 +68,9 @@ public class CribbagePlayer extends Player{
 
 
   public static void main(String[] args){
-    Suit clubs = new Suit("club",'♣',"black");
+    //System.out.println("Random name: "+ NameGenerator.getRandomName());
+
+    /*Suit clubs = new Suit("club",'♣',"black");
     Suit spades = new Suit("spades",'♠',"black");
     Suit diamonds = new Suit("diamonds",'♦',"red");
     Suit hearts = new Suit("hearts",'♥',"red");

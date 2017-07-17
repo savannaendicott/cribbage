@@ -30,8 +30,8 @@ public abstract class Player{
     for(Card c : hand){
       handStr += c.toString() +" ";
     }
-    handStr +="]"
-
+    handStr +="]";
+    return handStr;
   }
 
   public void discard(StandardDeck deck, Card card){
