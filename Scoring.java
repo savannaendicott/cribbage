@@ -19,15 +19,15 @@ public final class Scoring{
   public static int getMultiples(ArrayList<Card> hand, int n){
     ArrayList<String> values = new ArrayList<String>();
     for(Card c : hand) values.add(c.getRank());
-    System.out.println("getting multiples of size "+n+"\n Here are the values of the hand...");
+    //System.out.println("getting multiples of size "+n+"\n Here are the values of the hand...");
 
     ArrayList<String> multis = new ArrayList<String>();
     for(String s : values){
-      System.out.println("looking at "+ s+"... it is seen "+Collections.frequency(values,s)+" times");
+      //System.out.println("looking at "+ s+"... it is seen "+Collections.frequency(values,s)+" times");
       if(Collections.frequency(values,s) == n){
         if(!multis.contains(s)) {
           multis.add(s);
-          System.out.print(s+" appears "+ n+ " times.\n");
+          //System.out.print(s+" appears "+ n+ " times.\n");
         }
       }
     }
@@ -70,7 +70,7 @@ public final class Scoring{
           int j;
           for(j =0; j < repetitions(values,temp); j++)
             sequences.add(temp);
-          System.out.println("sequence found "+j+"times");
+          //System.out.println("sequence found "+j+"times");
         }
       }
     }
@@ -103,7 +103,7 @@ public final class Scoring{
             int j;
             for(j =0; j < repetitions(values,temp); j++)
               sequences.add(temp);
-            System.out.println("sequence found "+j+"times");
+            //System.out.println("sequence found "+j+"times");
           }
         }
       }
@@ -157,6 +157,16 @@ public final class Scoring{
     else return 4;
   }
 
+  public static int getFlush(ArrayList<Card> hand){
+    String suit = "";
+    for(Card c : hand){
+      StandardCard card = (StandardCard)c;
+      if(suit == "") suit = card.getSuit();
+      else if(!card.getSuit().equals(suit)) return 0;
+    }
+    return 4;
+  }
+
   public static int getBonus(ArrayList<Card> hand, Card cut){
     for(Card c : hand){
       if(c.getRank() == "J" ){
@@ -168,7 +178,6 @@ public final class Scoring{
     return 0;
   }
 
-
   public static int getFifteens(ArrayList<Card> hand){
     ArrayList<String> results = new ArrayList<String>();
     int total =0;
@@ -176,13 +185,13 @@ public final class Scoring{
     for(Card c : hand){
       total += getValue(c);
     }
-    System.out.println(" IS IT FIFTEEN? ... "+ total);
+    //System.out.println(" IS IT FIFTEEN? ... "+ total);
     if(total==15) return 1;
     else if(total < 15) return 0;
 
     // look for all possible combinations of 15 ...
     sum_up_recursive(hand,15,new ArrayList<Card>(), results);
-    System.out.println("Fifteen-"+results.size()+":"+results);
+    //System.out.println("Fifteen-"+results.size()+":"+results);
     return results.size();
   }
 

@@ -1,4 +1,4 @@
-
+import java.util.*;
 
 public class User extends CribbagePlayer{
   private String realName;
@@ -10,6 +10,24 @@ public class User extends CribbagePlayer{
 
   public String getRealName(){
     return this.realName;
+  }
+
+  public ArrayList<Card> getHand(){
+    return this.hand;
+  }
+
+  public void remove(Card c){
+    this.hand.remove(c);
+  }
+
+  public Card getCardByString(String cardStr){
+    for(Card c : this.hand){
+      if(cardStr.equals(c.toString())){
+        return c;
+      }
+    }
+    System.out.println("DIDNT MATCH");
+    return null;
   }
 
 }

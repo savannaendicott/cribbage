@@ -41,10 +41,6 @@ public class CribbagePlayer extends Player{
     int streak_points =0;
     for(ArrayList<Integer> seq : sequences){
       streak_points+=seq.size();
-      for(int n : seq){
-        System.out.print(n+" ");
-      }
-      System.out.print("\n");
     }
 
 
@@ -52,14 +48,10 @@ public class CribbagePlayer extends Player{
     int pairs = Scoring.getPairs(play);
     int trips = Scoring.getTriples(play);
     int quads = Scoring.getQuadruples(play);
-    //int streaks = Scoring.getStreaks(play);
     int multis = pairs + trips + quads;
     int fifteens = Scoring.getFifteens(play) * 2;
     int bonus = Scoring.getBonus(this.hand,cut);
     total +=  flushes + multis + streak_points + fifteens + Scoring.getBonus(this.hand, cut);
-
-    System.out.println("Hand has " + flushes + " points for a flush, \n" + pairs + " points for pairs, "+trips+" points for triples, "+quads+", points for quadruples, \n" +
-                        streak_points + " points for streaks, " + fifteens + " points for sets of 15"+ " and "+bonus+" for bonus.");
 
     this.pegs += total;
     return total;

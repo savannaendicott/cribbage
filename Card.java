@@ -18,18 +18,6 @@ public abstract class Card{
     return this.rank;
   }
 
-  /* only applies to cribbage games...*/
-  public int getValue(){
-    if(this.rank == "J" || this.rank == "Q" || this.rank == "K"){
-      return 10;
-    }
-    else if(this.rank == "A"){
-      return 1;
-    }
-
-    else return Integer.parseInt(this.rank);
-
-  }
   public String getRank(){
     return this.rank;
   }
@@ -38,7 +26,10 @@ public abstract class Card{
     if(this.rank == "J") return 11;
     if(this.rank == "Q") return 12;
     if(this.rank == "K") return 13;
-    else return getValue();
+    else if(this.rank == "A"){
+      return 1;
+    }
+    else return Integer.parseInt(this.rank);
   }
 
 }

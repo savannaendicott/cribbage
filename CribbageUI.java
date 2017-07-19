@@ -8,6 +8,24 @@ public class CribbageUI extends UserInterface{
     super();
   }
 
+  public int mainMenu(){
+    System.out.println("\n\n\n\nWELCOME TO CRIBBAGE!\n\n  A game by Savanna Endicott, all rights reserved.\n\n\n");
+
+    while(true){
+      sc = new Scanner(System.in);
+      System.out.println("Please enter the number of CPUs you would like to add (1 or 2):  ");
+      try{
+        int choice = sc.nextInt();
+        if(choice != 1 && choice != 2)
+          System.out.println("Sorry, you can only add 1 or 2 CPUs. Please try again.");
+        else return choice;
+      }catch(Exception e){
+        System.out.println("Incorrect input! Please try again.");
+      }
+
+    }
+  }
+
   public void peg(Player p, int n){
     System.out.println(p.getName() + " pegged " + n);
   }
@@ -29,14 +47,6 @@ public class CribbageUI extends UserInterface{
       System.out.println("Creating crib with 2 cards from each player");
     }
 
-  }
-
-  public CribbagePlayer createUserPlayer(){
-    System.out.println("Welcome to the game! Please enter your name: ");
-    sc = new Scanner(System.in);
-    String name = sc.next();
-    CribbagePlayer user = new CribbagePlayer(name);
-    return user;
   }
 
 

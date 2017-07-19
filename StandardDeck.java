@@ -16,17 +16,14 @@ public class StandardDeck{
   private ArrayList<Suit> suits;
 
 	public StandardDeck() {//return one person 'a'
-    this.deck = new ArrayList<Card>();
-    this.discardPile = new ArrayList<Card>();
-    createSuits();
-    completeDeck();
+    this(true);
 	}
   public StandardDeck(boolean jokers){
-    this.includeJokers = jokers;
     this.deck = new ArrayList<Card>();
     this.discardPile = new ArrayList<Card>();
+    this.includeJokers = jokers;
     createSuits();
-    completeDeck();
+    reset();
   }
 
   public void shuffle(){
@@ -40,23 +37,24 @@ public class StandardDeck{
     this.suits.add(new Suit("heart",'♥',"red"));
   }
 
-  protected void completeDeck(){
-      for(Suit s : this.suits){
-        for(int r =2; r < 11; r++){
-          addStandardCard(""+r, s);
-        }
-        addStandardCard("J", s);
-        addStandardCard("Q", s);
-        addStandardCard("K", s);
-        addStandardCard("A", s);
+  protected void reset(){
+    this.deck.clear();
+    for(Suit s : this.suits){
+      for(int r =2; r < 11; r++){
+        addStandardCard(""+r, s);
       }
+      addStandardCard("J", s);
+      addStandardCard("Q", s);
+      addStandardCard("K", s);
+      addStandardCard("A", s);
+    }
 
-      if(includeJokers){
-          // handle this somehow...
-          addCard(new Joker("red"));
-          addCard(new Joker("black"));
-      }
-      shuffle();
+    if(includeJokers){
+        // handle this somehow...
+        addCard(new Joker("red"));
+        addCard(new Joker("black"));
+    }
+    shuffle();
   }
   public void addStandardCard(String r, Suit s){
     addCard(new StandardCard(r,s));
@@ -79,6 +77,20 @@ public class StandardDeck{
     }
     shuffle();
     return this.deck.remove(this.deck.size() -1);
+  }
+  public ArrayList<Card> draw(int n){
+    ArrayList<Card> cards = new ArrayList<Card>();
+    if(this.deck.size() < n){
+      for(Card card: discardPile){
+        this.deck.add(card);
+        this.discardPile.remove(card);
+      }
+      shuffle();
+    }
+    for(int i =0; i < n; i ++ ){
+      cards.add(this.deck.remove(this.deck.size()-1));
+    }
+    return cards;
   }
 
   public void print(){

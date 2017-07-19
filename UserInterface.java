@@ -1,17 +1,19 @@
 
 import java.util.*;
 
-public class UserInterface{
+public abstract class UserInterface{
   public  Scanner sc;
 
   public UserInterface(){}
+
+  public abstract int mainMenu();
 
   public void startTurn(Player p){
     System.out.println("\n"+ p.getName() +"'s turn...");
   }
 
-  public void startRound(String r){
-    System.out.println("\n\n" + r);
+  public void printInfo(String r){
+    System.out.println("\n" + r);
   }
 
   public void peg(Player p, int n){
@@ -48,10 +50,8 @@ public class UserInterface{
     System.out.println(p.getName()+" cut a "+c.toString());
   }
 
-  public void deal(ArrayList<Player> players, Player dealer){
-    int numCards = 6;
-    if(players.size() == 3) numCards = 5;
-    System.out.println(dealer.getName()+" is dealing... displaying "+players.size()+" cards face down for all players");
+  public void deal(int n, Player dealer){
+    System.out.println(dealer.getName()+" is dealing... displaying "+n+" cards face down for all players");
   }
 
   public void createCrib(ArrayList<Player> players){
@@ -65,6 +65,26 @@ public class UserInterface{
       System.out.println("Creating crib with 2 cards from each player");
     }
 
+  }
+
+  public void displayHandToUser(ArrayList<Card> hand){
+    System.out.println("\nHere's whats in your hand: ");
+    for(Card c : hand){
+      System.out.print(c.toString()+" ");
+    }
+  }
+
+  public String promptDiscard(){
+    Scanner sc;
+    sc = new Scanner(System.in);
+    System.out.println("Please enter the card you'd like to discard (please copy paste): ");
+    try{
+      String choice = sc.next();
+      return choice;
+    }catch(Exception e){
+      System.out.println("Incorrect input! Please try again.");
+    }
+    return "";
   }
 
   public void reset(){
@@ -81,16 +101,20 @@ public class UserInterface{
   }
 
   public String getUserName(){
-    System.out.println("Welcome to the game! Please enter your name: ");
+    System.out.println("\n\n----------------------------------------------\n\nWelcome to the game! Please enter your name: ");
     sc = new Scanner(System.in);
     return sc.next();
   }
 
   public void startGame(ArrayList<Player> players) {
-    System.out.println("... Starting the game! Players are: ");
+    System.out.println("\n\n----------------------------------------------\n\nStarting the game! Players are: ");
     for(Player p : players){
       System.out.println("  "+p.getName());
     }
+  }
+
+  public void cardFlip(Player p, Card c) {
+    System.out.println("\n\n... "+ p.getName()+" cut a "+ c.toString());
   }
 
 

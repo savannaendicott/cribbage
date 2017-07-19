@@ -1,21 +1,28 @@
 import java.util.*;
 public class Cribbage extends CardGame{
 
+  private int NO_CARDS_IN_HAND = 4;
+
   /*  The Rules of Cribbage :
   Players:      2 - 3
   Equipment:    Standard 52 card deck
   Gameplay:
     1. Start of the game
-      - each player cuts a card, lowest plays first (tie draws again)
-      - ace is low, face cards worth 1
-      - for 2 players, each player gets 6 cards, 2 are discarded from each player to the crib
-      - for 3 players, each player gets 5 cards, 1 is discarded by each player and from the deck to the crib
-    2. Start of each round
-      - dealer shuffles & deals (player to the left of last dealer, if not the first round)
+      - show main menu
+      - have player choose number of players
+      - display game and players
+
+      - cut to see who goes first...
+      - each player "cuts" a random card from the deck
+      - person who flips the highest rank becomes the first dealer  (tie draws again);
+
+    2. New Round
+      - dealer shuffles & deals 6 cards (for 2 player game), or 5 cards (for 3 player game) plus 1 to the crib
       - each player chooses 4 cards to keep and donates the others to the crib
       - player on the dealer's left cuts the deck and the dealer flips the top card, the "cut"
       - if the dealer flips a jack, they peg 2. They can win on this peg
-    3. The play / pegging
+
+    3. Pegging
       - starts with player to the left of the dealer and goes clockwise
       - players flip card into the center face-up one at a time, accumulating the cards' worth
       - play cannot go above 31, if a player cannot play they say "go" and the next player continues
@@ -23,12 +30,13 @@ public class Cribbage extends CardGame{
       - 3-7 points for completing a run of 3-7, order doesn't matter
       - 2 points for laying a card with the same rank as the previous card, 6 for the third, 12 for the fourth
       - more than one combination can be scored (eg. 4 points for the second ace creating a total of 31)
-      - if 31 is reach exactly the player pegs 2 points
+      - if 31 is reached exactly the player pegs 2 points
       - otherwise last player to lay a card down pegs 1 point
       - then count resets to 0 and play continues, starting with player to the left of the player who played the last card in the former round
       - last round's cards are discarded and do not hold any carry-through
       - continues until all cards have been played
-    4. The show
+
+    4. Showing
       - starting with the player to the dealer's left, each player displays their hand
       - 2 points for each separate combination of cards totaling to 15 - can be any number of cards, every combination scores x
       - run of 3-5 consecutive ranks scores 3-5 pegs (suit irrelevant)
@@ -38,6 +46,8 @@ public class Cribbage extends CardGame{
       - 4 points for all cards being the same suit (+1 if the cut is that suit as well) x
       - 1 point for having a jack of the same suit as the cut x
       - dealer plays the crib as a second hand, scored the same except flushes only count if the cut is the same suit
+      - player to the left of the last dealer becomes the new one
+
     5. Winning
       - first player to peg 121 wins
       - the second they peg, they win.
@@ -50,23 +60,14 @@ public class Cribbage extends CardGame{
 
   private ArrayList<Card> crib;
 
-  public Cribbage(int nP){
-    super(nP, false);   // no jokers in cribbage
-    crib = new ArrayList<Card>();
+  public Cribbage(){
+    super(false);   // no jokers in cribbage
+    this.crib = new ArrayList<Card>();
     this.ui = new CribbageUI();
+
     String name = this.ui.getUserName();
     this.user = new User(name);
     this.players.add(user);
-    while(nP > 1){
-      this.players.add(new CPU());
-      nP --;
-    }
-    this.ui.startGame(this.players);
-  }
-  public Cribbage(int nP, int otherPlayers){
-    // THIS IS FOR A MULTIPLAYER GAME! THIS TYPE OF PLAYER HAS NOT BEEN IMPLEMENTED YET.
-    this(nP - otherPlayers);
-    // would initialize networked players here.
   }
 
   public void printPlayers(){
@@ -75,19 +76,160 @@ public class Cribbage extends CardGame{
     System.out.print(p.getName()+"   ");
   }
 
+  /*
+    dealer shuffles & deals 6 cards (for 2 player game), or 5 cards (for 3 player game) plus 1 to the crib
+  */
+  public void dealIn(CribbagePlayer dealer){
 
-  public void newRound(){
+    this.deck.reset();
+    int noPlayers = this.players.size();
+    int noCards = 0;
+
+    if(noPlayers == 2) noCards = 6;
+    if(noPlayers == 3){
+      noCards = 5;
+      this.crib.add(deck.draw());
+    }
+
+    this.ui.deal(noCards, dealer);
+    for(Player p : this.players){
+      p.add(deck.draw(noCards));
+      p.print();
+    }
+  }
+
+  /*- starts with player to the left of the dealer and goes clockwise
+  - players flip card into the center face-up one at a time, accumulating the cards' worth
+  - play cannot go above 31, if a player cannot play they say "go" and the next player continues
+  - if total is 15, player pegs 2
+  - 3-7 points for completing a run of 3-7, order doesn't matter
+  - 2 points for laying a card with the same rank as the previous card, 6 for the third, 12 for the fourth
+  - more than one combination can be scored (eg. 4 points for the second ace creating a total of 31)
+  - if 31 is reached exactly the player pegs 2 points
+  - otherwise last player to lay a card down pegs 1 point
+  - then count resets to 0 and play continues, starting with player to the left of the player who played the last card in the former round
+  - last round's cards are discarded and do not hold any carry-through
+  - continues until all cards have been played*/
+  public boolean pegging(CribbagePlayer dealer){
+    boolean winner = false;
+
+
+
+    return winner;
+  }
+
+  public boolean showing(CribbagePlayer dealer, Card cut){
+    boolean winner = false;
+
+
+    
+    return winner;
+  }
+
+
+  /* each player chooses 4 cards to keep and donates the others to the crib
+  */
+  public void createCrib(){
+    this.ui.printInfo("...Everyone chooses 4 cards to keep...");
+    for(Player p : this.players){
+      if(p instanceof User){
+        User usr = (User)p;
+        this.ui.displayHandToUser(usr.getHand());
+        int i =0;
+        while(usr.getHand().size() > 4){
+          String discardStr = this.ui.promptDiscard();
+          Card discard = usr.getCardByString(discardStr);
+          if(discard == null) this.ui.printInfo("Card not found. Please try again.");
+          else{
+            this.crib.add(discard);
+            usr.remove(discard);
+            i++;
+          }
+        }
+        this.ui.printInfo("O.K.! Everyone made a decision. Here is your new hand: ");
+        this.ui.displayHandToUser(usr.getHand());
+      }
+      else if(p instanceof CPU){
+        CPU cpu = (CPU)p;
+        for(Card c : cpu.discardToCrib())
+          this.crib.add(c);
+      }
+    }
+
 
   }
 
+  /*player on the dealer's left cuts the deck and the dealer flips the top card, the "cut"
+  if the dealer flips a jack, they peg 2. They can win on this peg*/
+  public Card cut(CribbagePlayer dealer){
+    Card cut = this.deck.draw();
+    this.ui.cardFlip(dealer, cut);
+    if(cut.getRank() == "J"){
+      dealer.peg(2);
+    }
+    return cut;
+  }
+
+  public boolean checkForWinner(Player player){
+    CribbagePlayer p = (CribbagePlayer)player;
+    if(p.getPegs() > 121){
+      return true;
+    }
+    else return false;
+  }
+
+  /* Start of the game
+      - show main menu
+      - have player choose number of players
+      - display game and players
+
+      - cut to see who goes first...
+      - each player "cuts" a random card from the deck
+      - person who flips the highest rank becomes the first dealer  (tie draws again);
+    */
+  public CribbagePlayer startGame(){
+    CribbagePlayer dealer;
+    int numComps = this.ui.mainMenu();
+    while(numComps > 0){
+      this.players.add(new CPU());
+      numComps --;
+    }
+    this.ui.startGame(this.players);
+    dealer = (CribbagePlayer)cutToFindWhoGoesFirst();
+    this.ui.printInfo(dealer.getName()+" deals first");
+    return dealer;
+  }
+
+  public void clearHands(){
+    for(Player p : this.players){
+      p.clearHand();
+    }
+  }
+
+
   public void run(){
+    boolean gameOver = false;
+    Player dealer;
+    Card cut;
+    dealer = startGame();
+    while(!gameOver){
+      dealIn(dealer);
+      createCrib();
+      cut = cut(dealer);
+      gameOver = checkForWinner(dealer);
+      gameOver = pegging(dealer);
+      gameOver = showing(cut,dealer);
+      clearHands();
+      this.ui.endPlayRound();
+      dealer = getNewDealer();
 
-
+    }
+    this.ui.
   }
   public static void main(String[] args){
     //System.out.println("Random name: "+ NameGenerator.getRandomName());
-    Cribbage game = new Cribbage(2);
-
+    Cribbage game = new Cribbage();
+    game.run();
 
 
 

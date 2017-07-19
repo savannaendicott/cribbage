@@ -18,11 +18,16 @@ public abstract class Player{
   }
 
   public void draw(StandardDeck deck){
-    hand.add(deck.draw());
+    this.hand.add(deck.draw());
   }
 
   public void add(Card c){
-    hand.add(c);
+    this.hand.add(c);
+  }
+  public void add(ArrayList<Card> cards){
+    for(Card c : cards){
+      this.hand.add(c);
+    }
   }
 
   public String getHandToString(){
@@ -49,6 +54,10 @@ public abstract class Player{
         }
     }
     System.out.println();
+  }
+
+  public void clearHand(){
+    this.hand.clear();
   }
 
   /*public static void main(String[] args){
