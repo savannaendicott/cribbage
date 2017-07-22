@@ -22,7 +22,6 @@ public class CribbageUI extends UserInterface{
       }catch(Exception e){
         System.out.println("Incorrect input! Please try again.");
       }
-
     }
   }
 
@@ -47,6 +46,21 @@ public class CribbageUI extends UserInterface{
       System.out.println("Creating crib with 2 cards from each player");
     }
 
+  }
+
+  public void showHand(Player p, int pegs){
+    System.out.println(p.getName()+" pegged "+pegs+" for the following hand: "+p.getHandToString());
+  }
+
+  public void revealCrib(Player p, int pegs, ArrayList<Card> crib){
+    System.out.print("\n"+p.getName()+" pegged "+ pegs+" for the crib: ");
+    for(Card c : crib){
+      System.out.print(c.toString() + " ");
+    }
+  }
+
+  public void updatePegBoard(CribbagePlayer p){
+    System.out.println("updating "+p.getName()+"'s pegs on the board to "+p.getPegs());
   }
 
 

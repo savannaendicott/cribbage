@@ -31,11 +31,10 @@ public abstract class Player{
   }
 
   public String getHandToString(){
-    String handStr = "[";
+    String handStr = "";
     for(Card c : hand){
       handStr += c.toString() +" ";
     }
-    handStr +="]";
     return handStr;
   }
 

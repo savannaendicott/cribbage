@@ -2,7 +2,7 @@ import java.util.*;
 public class Cribbage extends CardGame{
 
   private int NO_CARDS_IN_HAND = 4;
-
+  private CribbageUI ui;
   /*  The Rules of Cribbage :
   Players:      2 - 3
   Equipment:    Standard 52 card deck
@@ -80,16 +80,11 @@ public class Cribbage extends CardGame{
     dealer shuffles & deals 6 cards (for 2 player game), or 5 cards (for 3 player game) plus 1 to the crib
   */
   public void dealIn(CribbagePlayer dealer){
-
     this.deck.reset();
     int noPlayers = this.players.size();
-    int noCards = 0;
+    int noCards = (noPlayers == 3) ? 5 : 6;
 
-    if(noPlayers == 2) noCards = 6;
-    if(noPlayers == 3){
-      noCards = 5;
-      this.crib.add(deck.draw());
-    }
+    if(this.crib.size() < 4) this.crib.add(deck.draw());
 
     this.ui.deal(noCards, dealer);
     for(Player p : this.players){
@@ -118,11 +113,36 @@ public class Cribbage extends CardGame{
     return winner;
   }
 
+  /*- starting with the player to the dealer's left, each player displays their hand
+  - 2 points for each separate combination of cards totaling to 15 - can be any number of cards, every combination scores x
+  - run of 3-5 consecutive ranks scores 3-5 pegs (suit irrelevant)
+  - two points for a pair x
+  - six points for 3 of a kind x
+  - twelve points for 12 of a kind x
+  - 4 points for all cards being the same suit (+1 if the cut is that suit as well) x
+  - 1 point for having a jack of the same suit as the cut x
+  - dealer plays the crib as a second hand, scored the same except flushes only count if the cut is the same suit
+  - player to the left of the last dealer becomes the new one*/
   public boolean showing(CribbagePlayer dealer, Card cut){
     boolean winner = false;
 
+    int index = this.players.indexOf(dealer) +1;
 
-    
+    for(int i =0; i < this.players.size(); i++){
+      if(index == this.players.size()) index =0;
+      CribbagePlayer turn = (CribbagePlayer)this.players.get(index++);
+      int pegs = turn.peg(cut);
+      this.ui.showHand(turn, pegs);
+      if(pegs > 0) this.ui.updatePegBoard(turn);
+      winner = checkForWinner(turn);
+      if(turn == dealer){
+        System.out.println("This is the dealer, they have the crib.");
+        pegs = turn.peg(this.crib, cut);
+        this.ui.revealCrib(turn,pegs, crib);
+        if(pegs > 0) this.ui.updatePegBoard(turn);
+      }
+      winner = checkForWinner(turn);
+    }
     return winner;
   }
 
@@ -166,6 +186,7 @@ public class Cribbage extends CardGame{
     this.ui.cardFlip(dealer, cut);
     if(cut.getRank() == "J"){
       dealer.peg(2);
+      this.ui.updatePegBoard(dealer);
     }
     return cut;
   }
@@ -195,21 +216,27 @@ public class Cribbage extends CardGame{
       numComps --;
     }
     this.ui.startGame(this.players);
-    dealer = (CribbagePlayer)cutToFindWhoGoesFirst();
+    dealer = (CribbagePlayer)cutToFindWhoGoesFirst(this.ui);
     this.ui.printInfo(dealer.getName()+" deals first");
     return dealer;
   }
 
-  public void clearHands(){
+  public void cleanupRound(){
     for(Player p : this.players){
       p.clearHand();
     }
+    this.crib.clear();
+  }
+  public CribbagePlayer getNewDealer(Player currentDealer){
+    int index = this.players.indexOf(currentDealer);
+    int newDealerIndex = (index == this.players.size()-1)? 0 : (index+1);
+    return (CribbagePlayer) this.players.get(newDealerIndex);
   }
 
 
   public void run(){
     boolean gameOver = false;
-    Player dealer;
+    CribbagePlayer dealer;
     Card cut;
     dealer = startGame();
     while(!gameOver){
@@ -218,13 +245,12 @@ public class Cribbage extends CardGame{
       cut = cut(dealer);
       gameOver = checkForWinner(dealer);
       gameOver = pegging(dealer);
-      gameOver = showing(cut,dealer);
-      clearHands();
+      gameOver = showing(dealer,cut);
       this.ui.endPlayRound();
-      dealer = getNewDealer();
-
+      dealer = getNewDealer(dealer);
+      System.out.println(dealer.getName()+" is the new dealer!");
+      cleanupRound();
     }
-    this.ui.
   }
   public static void main(String[] args){
     //System.out.println("Random name: "+ NameGenerator.getRandomName());

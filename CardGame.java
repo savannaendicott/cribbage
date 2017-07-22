@@ -4,9 +4,9 @@ public abstract class CardGame {
 
   protected StandardDeck deck;
   protected ArrayList<Player> players;
-  protected Player dealer;
+  //protected Player dealer;
   protected Player user;
-  protected UserInterface ui;
+  //protected UserInterface ui;
   //private ArrayList<Stage> stages;
 
   public CardGame () {//return one person 'a'
@@ -19,8 +19,8 @@ public abstract class CardGame {
     this.players = new ArrayList<Player>();
   }
 
-  public Player cutToFindWhoGoesFirst(){
-    this.ui.printInfo("...Cutting to see who goes first!");
+  public Player cutToFindWhoGoesFirst(UserInterface ui){
+    ui.printInfo("...Cutting to see who goes first!");
     ArrayList<Player> winners = new ArrayList<Player>(this.players);
     int max =0;
     HashMap<Player, Integer> competition = new HashMap<>();
@@ -28,7 +28,7 @@ public abstract class CardGame {
       for(Player p : winners){
         Card c = this.deck.draw();
         competition.put(p,c.getIndexValue());
-        this.ui.printInfo("..."+p.getName() +" drew a "+c.toString());
+        ui.printInfo("..."+p.getName() +" drew a "+c.toString());
       }
       max = 0;
       for (Integer rank : competition.values()) {

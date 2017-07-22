@@ -33,8 +33,12 @@ public class CribbagePlayer extends Player{
   }
 
   public int peg(Card cut){
+    return peg(this.hand, cut);
+  }
+
+  public int peg(ArrayList<Card> hand, Card cut){
     int total = 0;
-    ArrayList<Card> play = new ArrayList<Card>(this.hand);
+    ArrayList<Card> play = new ArrayList<Card>(hand);
     play.add(cut);
 
     ArrayList<ArrayList<Integer>> sequences = Scoring.getStreaks(play);
@@ -43,15 +47,14 @@ public class CribbagePlayer extends Player{
       streak_points+=seq.size();
     }
 
-
-    int flushes = Scoring.getFlush(this.hand, cut);
+    int flushes = Scoring.getFlush(hand, cut);
     int pairs = Scoring.getPairs(play);
     int trips = Scoring.getTriples(play);
     int quads = Scoring.getQuadruples(play);
     int multis = pairs + trips + quads;
     int fifteens = Scoring.getFifteens(play) * 2;
-    int bonus = Scoring.getBonus(this.hand,cut);
-    total +=  flushes + multis + streak_points + fifteens + Scoring.getBonus(this.hand, cut);
+    int bonus = Scoring.getBonus(hand,cut);
+    total +=  flushes + multis + streak_points + fifteens + Scoring.getBonus(hand, cut);
 
     this.pegs += total;
     return total;
