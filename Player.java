@@ -13,6 +13,16 @@ public abstract class Player{
     this.name = n;
 	}
 
+  public ArrayList<Card> getRemainingHand(ArrayList<Card> laid){
+    ArrayList<Card> remaining = new ArrayList<Card>();
+    for(Card c : this.hand){
+      if(!laid.contains(c)){
+        remaining.add(c);
+      }
+    }
+    return remaining;
+  }
+
   public String getName(){
     return this.name;
   }

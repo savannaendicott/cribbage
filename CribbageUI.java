@@ -63,6 +63,11 @@ public class CribbageUI extends UserInterface{
     System.out.println("updating "+p.getName()+"'s pegs on the board to "+p.getPegs());
   }
 
+  public void peg(CribbagePlayer p, int n, String reason){
+    System.out.println(p.getName()+" pegs "+n+" for "+ reason);
+    System.out.println("updating "+p.getName()+"'s pegs on the board to "+p.getPegs());
+  }
+
 
 
 

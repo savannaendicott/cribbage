@@ -7,19 +7,66 @@ public class CPU extends CribbagePlayer{
     super(NameGenerator.getRandomName());
   }
 
-  public ArrayList<Card> discardToCrib(){
-    if(this.hand.size() == 6) return discardTwoToCrib();
-    return discardOneToCrib();
+  public ArrayList<Card> discardToCrib(StandardCard cut){
+    if(this.hand.size() == 6) return discardTwoToCrib(cut);
+    return discardOneToCrib(cut);
   }
 
-  public ArrayList<Card> discardOneToCrib(){
+  public Card selectCardToPlay(ArrayList<Card> hand, ArrayList<Card> play){
+    Card choice = null;
+    int max = 31 - getSum(play);
+
+    for(Card c : hand){
+      if(c.getIndexValue() <= max){
+        if(choice == null) choice = c;
+        else choice = getBestChoice(choice, c, play);
+      }
+    }
+    return choice;
+  }
+
+  public Card getBestChoice(Card current, Card potential, ArrayList<Card> play){
+    int[] scores = { 0,0 };
+    ArrayList<Card> competitors = new ArrayList<Card>();
+    Card lastInPlay = play.get(play.size()-1);
+    Card secondLastInPlay = play.get(play.size()-2);
+
+    competitors.add(potential); competitors.add(current);
+
+    int num = 2;
+    if(lastInPlay.getRank() == secondLastInPlay.getRank()) num =6;
+    for(Card c : competitors){
+      ArrayList<Card> temp = new ArrayList<Card>();
+      temp.add(lastInPlay);
+      temp.add(c);
+      if(c.getRank() == lastInPlay.getRank() || c.getRank() == secondLastInPlay.getRank()){
+        scores[competitors.indexOf(c)] += num;
+      }
+//      scores[competitors.indexOf(c)] += 2 * Scoring.getFifteens(temp);
+      temp.add(secondLastInPlay);
+//      scores[competitors.indexOf(c)] += 3 * Scoring.getStreaks(temp).size();
+
+    }
+    if(scores[0] > scores[1]) return potential;
+    else return current;
+  }
+
+  public int getSum(ArrayList<Card> play){
+    int n = 0;
+    for(Card c : play){
+      n += c.getIndexValue();
+    }
+    return n;
+  }
+
+  public ArrayList<Card> discardOneToCrib(StandardCard cut){
     ArrayList<Card> choices = new ArrayList<Card>();
     ArrayList<Integer> calcs = new ArrayList<Integer>();
 
     for(Card c : this.hand){
       ArrayList<Card> subset = new ArrayList<Card>(this.hand);
       subset.remove(c);
-      calcs.add(hypotheticalPeg(subset));
+      calcs.add(Scoring.getTotalPointsForShow(hand, cut));
     }
 
     int max = Collections.max(calcs);
@@ -28,7 +75,7 @@ public class CPU extends CribbagePlayer{
     return choices;
   }
 
-  public ArrayList<Card> discardTwoToCrib(){
+  public ArrayList<Card> discardTwoToCrib(StandardCard cut){
     ArrayList<Card> choices = new ArrayList<Card>();
     int[][] calcs = new int[5][5];
 
@@ -38,7 +85,7 @@ public class CPU extends CribbagePlayer{
         if(i > j){
           ArrayList<Card> subset = new ArrayList<Card>(this.hand);
           subset.remove(i); subset.remove(j);
-          int points = hypotheticalPeg(subset);
+          int points = Scoring.getTotalPointsForShow(hand, cut);
           if(points > max){
             choices.clear();
             choices.add(this.hand.get(i)); choices.add(this.hand.get(j));
@@ -62,17 +109,8 @@ public class CPU extends CribbagePlayer{
     return handArray;
   }
 
-  public int hypotheticalPeg(ArrayList<Card> hyp_hand){
-    ArrayList<ArrayList<Integer>> sequences = Scoring.getStreaks(hyp_hand);
-    int streak_points =0;
-    for(ArrayList<Integer> seq : sequences) streak_points+=seq.size();
-    int flushes = Scoring.getFlush(hyp_hand);
-    int pairs = Scoring.getPairs(hyp_hand);
-    int trips = Scoring.getTriples(hyp_hand);
-    int quads = Scoring.getQuadruples(hyp_hand);
-    int fifteens = Scoring.getFifteens(hyp_hand) * 2;
-
-    return flushes + pairs + trips + quads + streak_points + fifteens;
+  public int hypotheticalPeg(ArrayList<Card> hyp_hand, StandardCard cut){
+    return Scoring.getTotalPointsForShow(hand, cut);
   }
 
 }

@@ -51,15 +51,15 @@ public class StandardDeck{
 
     if(includeJokers){
         // handle this somehow...
-        addCard(new Joker("red"));
-        addCard(new Joker("black"));
+        add(new Joker("red"));
+        add(new Joker("black"));
     }
     shuffle();
   }
   public void addStandardCard(String r, Suit s){
-    addCard(new StandardCard(r,s));
+    add(new StandardCard(r,s));
   }
-  public void addCard(Card c){
+  public void add(Card c){
     if(!deck.contains(c))
       deck.add(c);
   }
